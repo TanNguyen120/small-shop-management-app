@@ -1,0 +1,1 @@
+# small-shop-management-app.
