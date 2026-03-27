@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { type Product } from '@/types/product';
+import { type Product } from '@/type/product';
 
 // Define the Database schema types for better Autocomplete
 export type Database = {
