@@ -73,30 +73,6 @@ export default function ProductForm() {
         <h2 className='text-xl font-semibold'>Thêm Sản Phẩm Mới</h2>
       </div>
 
-      {/* Tên sản phẩm */}
-      <form.Field name='name'>
-        {(field) => (
-          <div className='space-y-1'>
-            <label className='text-sm font-medium flex items-center gap-2'>
-              Tên sản phẩm <span className='text-destructive'>*</span>
-            </label>
-            <input
-              name={field.name}
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder='VD: Giày Nike Air Max'
-              className='w-full p-2 border rounded-md focus:ring-2 focus:ring-primary outline-none'
-            />
-            {field.state.meta.errors && (
-              <p className='text-xs text-destructive'>
-                {field.state.meta.errors.join(', ')}
-              </p>
-            )}
-          </div>
-        )}
-      </form.Field>
-
       {/* Bảng giá */}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
         {priceFields.map((priceField) => (
