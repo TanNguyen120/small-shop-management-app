@@ -5,7 +5,7 @@ import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { productSchema } from '@/type/product';
 import { supabase } from '@/lib/supabase/supabase';
-import { Package, Barcode, DollarSign, Factory, Tag } from 'lucide-react';
+import { Package, Barcode, DollarSign, Factory, Tag, View } from 'lucide-react';
 
 // 1. Extract the exact type from the Schema to ensure 1:1 parity
 type ProductFormValues = z.input<typeof productSchema>;
@@ -72,6 +72,45 @@ export default function ProductForm() {
         <Package className='w-5 h-5 text-primary' />
         <h2 className='text-xl font-semibold'>Thêm Sản Phẩm Mới</h2>
       </div>
+
+      {/* --- NEW: Product Name Field --- */}
+      <form.Field
+        name='name'
+        validators={{
+          onChange: productSchema.shape.name, // Link to your Zod min(1) rule
+        }}
+      >
+        {(field) => (
+          <div className='space-y-1'>
+            <label className='text-sm font-medium flex items-center gap-2'>
+              Tên sản phẩm <span className='text-destructive'>*</span>
+            </label>
+            <input
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder='VD: Áo thun Cotton Premium'
+              className={`w-full p-2.5 border rounded-md shadow-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all ${
+                field.state.meta.errors.length > 0
+                  ? 'border-destructive'
+                  : 'border-input'
+              }`}
+            />
+            {field.state.meta.errors.length > 0 && (
+              <p className='text-xs text-destructive font-medium'>
+                {field.state.meta.errors.join(', ')}
+              </p>
+            )}
+          </div>
+        )}
+      </form.Field>
+
+      {/* Existing Bảng giá (Price Grid) starts here... */}
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+        {/* ... your priceFields mapping ... */}
+      </div>
+
+      {/* ... rest of the form ... */}
 
       {/* Bảng giá */}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
