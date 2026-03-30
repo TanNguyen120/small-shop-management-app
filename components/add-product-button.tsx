@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 export function AddProductButton() {
   return (
     <>
-      <Link href='/add-product' target='_blank'>
+      <Link href='/pages/add-product' target='_blank'>
         <Button className='flex items-center gap-2' size='sm'>
           <svg
             className='h-3 w-3'
