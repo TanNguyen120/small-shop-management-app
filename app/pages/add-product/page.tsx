@@ -1,19 +1,12 @@
+import { DataImportButton } from '@/components/import-from-csv-button';
 import ProductForm from '@/components/product/AddProduct';
-import { Button } from '@/components/ui/button';
+
 import React from 'react';
 
 const AddProductPage = () => {
   return (
-    <div>
-      <Button
-        variant='outline'
-        className='mb-4'
-        onClick={() => {
-          console.log('Back button clicked');
-        }}
-      >
-        Back
-      </Button>
+    <div className='p-4'>
+      <DataImportButton />
       <ProductForm />
     </div>
   );

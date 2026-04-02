@@ -5,7 +5,7 @@ import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { productSchema } from '@/type/product';
 import { supabase } from '@/lib/supabase/supabase';
-import { Package, Barcode, DollarSign, Factory, Tag, View } from 'lucide-react';
+import { Package, Barcode, DollarSign, Factory, Tag } from 'lucide-react';
 
 // 1. Extract the exact type from the Schema to ensure 1:1 parity
 type ProductFormValues = z.input<typeof productSchema>;
