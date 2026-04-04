@@ -1,34 +1,67 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
+  getFilteredRowModel,
+  FilterFn,
 } from '@tanstack/react-table';
-import { Package, AlertTriangle, Barcode, Factory, Tag } from 'lucide-react';
+import {
+  Package,
+  AlertTriangle,
+  Barcode,
+  Factory,
+  Tag,
+  X,
+  Search,
+} from 'lucide-react';
 import { Product } from '@/type/product';
 
 const columnHelper = createColumnHelper<Product>();
 
+export const removeVietnameseTones = (str: string): string => {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+};
+
 export const ProductListTable = ({ data }: { data: Product[] }) => {
+  const [globalFilter, setGlobalFilter] = useState('');
+  const vietnameseFilterFn: FilterFn<any> = (row, columnId, value, addMeta) => {
+    // Normalize the search terms
+    const searchTerms = removeVietnameseTones(value);
+
+    // Get the cell value and normalize it
+    const cellValue = row.getValue(columnId);
+    if (cellValue == null) return false;
+
+    const normalizedCellValue = removeVietnameseTones(String(cellValue));
+
+    // Return true if the normalized cell contains the normalized search term
+    return normalizedCellValue.includes(searchTerms);
+  };
   const columns = useMemo(
     () => [
       // 1. Tên Sản Phẩm & Danh Mục
       columnHelper.accessor('name', {
         header: 'Sản phẩm',
         cell: (info) => (
-          <div className='flex items-center gap-3 min-w-[200px]'>
+          <div className='flex items-center gap-3 min-w-[200px] text-white'>
             <div className='w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center'>
               <Package className='w-5 h-5 text-slate-400' />
             </div>
             <div>
-              <p className='font-semibold text-sm text-slate-900 leading-tight'>
+              <p className='font-semibold text-sm text-slate-100 leading-tight'>
                 {info.getValue()}
               </p>
               <div className='flex items-center gap-1 mt-0.5'>
                 <Tag className='w-3 h-3 text-slate-400' />
-                <p className='text-xs text-slate-500 italic'>
+                <p className='text-xs text-slate-100 italic'>
                   {info.row.original.category || 'Chưa phân loại'}
                 </p>
               </div>
@@ -42,7 +75,7 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
         id: 'details',
         header: 'Thông tin thêm',
         cell: (info) => (
-          <div className='text-xs space-y-1 text-slate-600'>
+          <div className='text-xs space-y-1 text-slate-200'>
             <div className='flex items-center gap-1'>
               <Barcode className='w-3 h-3' />{' '}
               {info.row.original.barcode || '---'}
@@ -117,8 +150,8 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
       }),
 
       // 5. Ngày tạo
-      columnHelper.accessor('created_at', {
-        header: 'Ngày tạo',
+      columnHelper.accessor('category', {
+        header: 'Nhóm hàng',
         cell: (info) => (
           <span className='text-xs text-slate-400 whitespace-nowrap'>
             {info.getValue()}
@@ -132,12 +165,37 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
   const table = useReactTable({
     data,
     columns,
+    state: {
+      globalFilter, // 🔍 2. Pass filter state to table
+    },
+    globalFilterFn: vietnameseFilterFn,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
     <div className='w-full overflow-x-auto rounded-xl border border-slate-200 bg-card shadow-sm'>
+      <div className='relative max-w-md bg-black'>
+        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+          <Search className='h-4 w-4 text-slate-400' />
+        </div>
+        <input
+          type='text'
+          value={globalFilter ?? ''}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder='Tìm tên hàng, mã vạch, nhóm hàng...'
+          className='block text-black w-full pl-10 pr-10 py-2 border border-slate-200 rounded-xl bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm'
+        />
+        {globalFilter && (
+          <button
+            onClick={() => setGlobalFilter('')}
+            className='absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600'
+          >
+            <X className='h-4 w-4' />
+          </button>
+        )}
+      </div>
       <table className='w-full text-left border-collapse'>
         <thead className='bg-slate-50 border-b border-slate-200'>
           {table.getHeaderGroups().map((headerGroup) => (

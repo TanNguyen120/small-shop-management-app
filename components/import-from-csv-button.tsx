@@ -7,24 +7,39 @@ import { Loader2, FileSpreadsheet } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase/supabase';
 import { processProductCsv } from '@/lib/helper/csvRelateHelpers';
+import { Product } from '@/type/product';
+
+interface ProductInsert {
+  name: string;
+  product_id?: string | null;
+  cost_price: number;
+  retail_price: number;
+  wholesale_price: number;
+  stock_quantity: number;
+  is_active: boolean;
+  category?: string | null;
+  manufacturer?: string | null;
+  barcode?: string | null;
+  description?: string | null;
+  unit?: string | null;
+}
 
 export const DataImportButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const queryClient = useQueryClient();
 
   const { mutate: uploadProducts, isPending } = useMutation({
-    mutationFn: async (products: any[]) => {
-      const { error } = await supabase
-        .from('product')
+    // Explicitly type the input as Partial<Product>[]
+    mutationFn: async (products: Partial<Product>[]) => {
+      const { data, error } = await (supabase as any)
+        .from('products')
         .upsert(products, { onConflict: 'product_id' });
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
-      alert('Nhập dữ liệu thành công!');
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      // ... success logic
     },
-    onError: (error) => alert(`Lỗi: ${error.message}`),
   });
 
   const handleFileChange = async (
