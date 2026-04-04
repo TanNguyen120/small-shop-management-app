@@ -16,7 +16,7 @@ export const DataImportButton = () => {
   const { mutate: uploadProducts, isPending } = useMutation({
     mutationFn: async (products: any[]) => {
       const { error } = await supabase
-        .from('products')
+        .from('product')
         .upsert(products, { onConflict: 'product_id' });
       if (error) throw error;
     },
