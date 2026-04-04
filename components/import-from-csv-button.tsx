@@ -31,9 +31,10 @@ export const DataImportButton = () => {
   const { mutate: uploadProducts, isPending } = useMutation({
     // Explicitly type the input as Partial<Product>[]
     mutationFn: async (products: Partial<Product>[]) => {
-      const { data, error } = await (supabase as any)
-        .from('products')
-        .upsert(products, { onConflict: 'product_id' });
+      const { data, error } = await (supabase.from('product') as any).upsert(
+        products,
+        { onConflict: 'product_id' },
+      );
       if (error) throw error;
       return data;
     },
