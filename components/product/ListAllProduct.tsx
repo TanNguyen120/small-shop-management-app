@@ -162,9 +162,6 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
     [],
   );
 
-  // 🔍 1. Filter State
-  const [globalFilter, setGlobalFilter] = useState('');
-
   const table = useReactTable({
     data,
     columns,
