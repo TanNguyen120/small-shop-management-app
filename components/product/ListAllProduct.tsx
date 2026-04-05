@@ -1,12 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
+  getFilteredRowModel,
 } from '@tanstack/react-table';
-import { Package, AlertTriangle, Barcode, Factory, Tag } from 'lucide-react';
+import {
+  Package,
+  AlertTriangle,
+  Barcode,
+  Factory,
+  Tag,
+  X,
+  Search,
+} from 'lucide-react';
 import { Product } from '@/type/product';
 
 const columnHelper = createColumnHelper<Product>();
@@ -129,15 +138,41 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
     [],
   );
 
+  // 🔍 1. Filter State
+  const [globalFilter, setGlobalFilter] = useState('');
+
   const table = useReactTable({
     data,
     columns,
+    state: { globalFilter },
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
     <div className='w-full overflow-x-auto rounded-xl border border-slate-200 bg-card shadow-sm'>
+      <div className='relative max-w-md'>
+        <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+          <Search className='h-4 w-4 text-slate-400' />
+        </div>
+        <input
+          type='text'
+          value={globalFilter ?? ''}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder='Tìm tên hàng, mã vạch, nhóm hàng...'
+          className='block w-full pl-10 pr-10 py-2 border border-slate-200 rounded-xl bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm'
+        />
+        {globalFilter && (
+          <button
+            onClick={() => setGlobalFilter('')}
+            className='absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600'
+          >
+            <X className='h-4 w-4' />
+          </button>
+        )}
+      </div>
       <table className='w-full text-left border-collapse'>
         <thead className='bg-slate-50 border-b border-slate-200'>
           {table.getHeaderGroups().map((headerGroup) => (
