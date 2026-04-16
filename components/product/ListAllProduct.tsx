@@ -33,21 +33,32 @@ export const removeVietnameseTones = (str: string): string => {
     .toLowerCase();
 };
 
+/**
+ * A custom filter function that supports searching for words in any order.
+ * It splits the search query into individual words and ensures that every word
+ * is present in at least one of the searchable columns for the given row.
+ */
+export const wordsInAnyOrderFilter: FilterFn<Product> = (
+  row,
+  _columnIds,
+  filterValue: string,
+) => {
+  const normalizedQuery = removeVietnameseTones(filterValue);
+  const searchTerms = normalizedQuery.split(/\s+/).filter(Boolean);
+
+  if (searchTerms.length === 0) return true;
+
+  // Concatenate searchable fields from the original product object
+  const searchableText = removeVietnameseTones(
+    `${row.original.name} ${row.original.barcode ?? ''} ${row.original.category ?? ''} ${row.original.manufacturer ?? ''}`,
+  );
+
+  // Ensure every word in the search query is present in the combined searchable text
+  return searchTerms.every((term) => searchableText.includes(term));
+};
+
 export const ProductListTable = ({ data }: { data: Product[] }) => {
   const [globalFilter, setGlobalFilter] = useState('');
-  const vietnameseFilterFn: FilterFn<any> = (row, columnId, value, addMeta) => {
-    // Normalize the search terms
-    const searchTerms = removeVietnameseTones(value);
-
-    // Get the cell value and normalize it
-    const cellValue = row.getValue(columnId);
-    if (cellValue == null) return false;
-
-    const normalizedCellValue = removeVietnameseTones(String(cellValue));
-
-    // Return true if the normalized cell contains the normalized search term
-    return normalizedCellValue.includes(searchTerms);
-  };
   const columns = useMemo(
     () => [
       // 1. Tên Sản Phẩm & Danh Mục
@@ -177,7 +188,7 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
     state: {
       globalFilter, // 🔍 2. Pass filter state to table
     },
-    globalFilterFn: vietnameseFilterFn,
+    globalFilterFn: wordsInAnyOrderFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

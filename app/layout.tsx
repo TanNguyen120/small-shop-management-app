@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google';
 import Providers from './provider';
 import './globals.css';
 import HeaderNav from '@/components/headerNav/HeaderNav';
+import { Sidebar } from '@/components/ui/sideBar';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -29,8 +30,11 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
         <Providers>
-          <HeaderNav />
-          {children}
+          {/* <HeaderNav /> */}
+          <div className='flex min-h-screen'>
+            <Sidebar />
+            <main className='flex-1 ml-56 '>{children}</main>
+          </div>
         </Providers>
       </body>
     </html>
