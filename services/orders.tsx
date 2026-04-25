@@ -1,9 +1,13 @@
 import { supabase } from '@/lib/supabase/supabase';
-import { OrderTransaction } from '@/type/order';
+import { OrderTransaction, OrderItem } from '@/type/order';
+
+type OrderWithItemsResponse = OrderTransaction & {
+  order_items: (OrderItem & { product: { name: string } | null })[];
+};
 
 export const fetchOrders = async (): Promise<OrderTransaction[]> => {
   const { data, error } = await supabase
-    .from('order_transactions' as any)
+    .from('order_transactions')
     .select(`
       *,
       order_items (
@@ -19,13 +23,15 @@ export const fetchOrders = async (): Promise<OrderTransaction[]> => {
   }
 
   // Format order_items to include product_name if needed
-  const formattedData = (data as any[]).map(order => ({
-    ...order,
-    order_items: order.order_items?.map((item: any) => ({
-      ...item,
-      product_name: item.product?.name
-    }))
-  }));
+  const formattedData = (data as unknown as OrderWithItemsResponse[]).map(
+    (order) => ({
+      ...order,
+      order_items: order.order_items?.map((item) => ({
+        ...item,
+        product_name: item.product?.name,
+      })),
+    }),
+  );
 
   return formattedData as OrderTransaction[];
 };

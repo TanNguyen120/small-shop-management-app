@@ -33,7 +33,7 @@ export default function ProductForm() {
     },
     onSubmit: async ({ value }) => {
       if (value) {
-        const { error } = await supabase.from('product').insert(value as any);
+        const { error } = await supabase.from('product').insert(value);
         if (error) {
           alert(`Lỗi: ${error.message}`);
         } else {

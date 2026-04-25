@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { type Product } from '@/type/product';
+import { type OrderTransaction, type OrderItem } from '@/type/order';
 
 // Define the Database schema types for better Autocomplete
 export type Database = {
@@ -12,6 +13,16 @@ export type Database = {
           'id' | 'product_id' | 'created_at' | 'updated_at'
         >; // Data to send
         Update: Partial<Omit<Product, 'id' | 'product_id'>>; // Data to change
+      };
+      order_transactions: {
+        Row: OrderTransaction;
+        Insert: Omit<OrderTransaction, 'id' | 'created_at'>;
+        Update: Partial<OrderTransaction>;
+      };
+      order_items: {
+        Row: OrderItem;
+        Insert: Omit<OrderItem, 'id'>;
+        Update: Partial<OrderItem>;
       };
     };
   };

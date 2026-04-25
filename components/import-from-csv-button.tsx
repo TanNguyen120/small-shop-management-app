@@ -6,23 +6,8 @@ import Papa from 'papaparse';
 import { Loader2, FileSpreadsheet } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase/supabase';
-import { processProductCsv } from '@/lib/helper/csvRelateHelpers';
+import { processProductCsv, RawCsvRow } from '@/lib/helper/csvRelateHelpers';
 import { Product } from '@/type/product';
-
-interface ProductInsert {
-  name: string;
-  product_id?: string | null;
-  cost_price: number;
-  retail_price: number;
-  wholesale_price: number;
-  stock_quantity: number;
-  is_active: boolean;
-  category?: string | null;
-  manufacturer?: string | null;
-  barcode?: string | null;
-  description?: string | null;
-  unit?: string | null;
-}
 
 export const DataImportButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +17,8 @@ export const DataImportButton = () => {
   const { mutate: uploadProducts, isPending } = useMutation({
     // Explicitly type the input as Partial<Product>[]
     mutationFn: async (products: Partial<Product>[]) => {
-      const { data, error } = await (supabase.from('product') as any).upsert(
+      // @ts-expect-error - upsert might need Row or Insert type, and Partial<Product> might not match exactly
+      const { data, error } = await supabase.from('product').upsert(
         products,
         { onConflict: 'product_id' },
       );
@@ -62,9 +48,9 @@ export const DataImportButton = () => {
         console.log('Excel Workbook:', workbook); // Debug log to check the workbook structure
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         console.log('Excel Worksheet:', worksheet); // Debug log to check the worksheet structure
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        const jsonData = XLSX.utils.sheet_to_json(worksheet) as RawCsvRow[];
         console.log('Parsed Excel Data:', jsonData); // Debug log to check the parsed data structure
-        const formatted = processProductCsv(jsonData as any[]);
+        const formatted = processProductCsv(jsonData);
         console.log('Formatted Product Data:', formatted); // Debug log to check the formatted data structure
 
         uploadProducts(formatted);
@@ -74,7 +60,7 @@ export const DataImportButton = () => {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const formatted = processProductCsv(results.data as any[]);
+            const formatted = processProductCsv(results.data as RawCsvRow[]);
             uploadProducts(formatted);
           },
         });

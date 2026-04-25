@@ -37,6 +37,7 @@ When working on this project, Gemini must strictly enforce these modern best pra
 - **TanStack Query Factories:** Organize query keys using a factory pattern to avoid magic strings and ensure consistent cache invalidation.
 - **Service Layer Isolation:** Database queries should reside in `services/`. Server Actions should call these services.
 - **Type Safety:** Maintain 1:1 parity between Zod schemas, TypeScript types, and Supabase table structures.
+- **No `any` Types:** Strictly avoid the use of `any`. Use specific TypeScript interfaces, Zod-inferred types, or `unknown` (with type guards) to ensure type safety and prevent build errors (`@typescript-eslint/no-explicit-any`).
 
 ### 4. Implementation Workflow
 1.  **Define Schema:** Update `type/product.ts` if data structure changes.

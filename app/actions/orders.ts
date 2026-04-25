@@ -3,8 +3,16 @@
 import { createClient } from '@/lib/supabase/server'; // Verify this path
 import { revalidatePath } from 'next/cache';
 
+interface CartItem {
+  id: string;
+  name: string;
+  barcode: string;
+  retail_price: number;
+  quantity: number;
+}
+
 export async function saveOrderAction(
-  items: any[],
+  items: CartItem[],
   total: number,
   discount: number,
 ) {

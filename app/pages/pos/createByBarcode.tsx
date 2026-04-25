@@ -6,11 +6,12 @@ import { Barcode, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { usePOSStore } from '@/store/use-pos-store';
 // import { supabase } from '@/utils/supabase/client'; // Import your client
 import { createClient } from '@/lib/supabase/client';
+import { Product } from '@/type/product';
 
 export default function CreateByBarcode() {
   const [barcode, setBarcode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [foundProduct, setFoundProduct] = useState<any>(null);
+  const [foundProduct, setFoundProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);

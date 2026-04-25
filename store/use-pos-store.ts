@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { Product } from '@/type/product';
 
 export interface CartItem {
   id: string;
@@ -14,7 +15,7 @@ export interface CartItem {
 interface POSState {
   items: CartItem[];
   discount: number; // Global order discount
-  addItem: (product: any) => void;
+  addItem: (product: Product) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   updatePrice: (productId: string, newPrice: number) => void; // Item-level price
