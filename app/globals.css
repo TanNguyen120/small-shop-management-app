@@ -66,3 +66,36 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+  }
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important; /* Allow width to be determined by the receipt */
+  }
+  /* Remove the specific sidebar margin from layout.tsx */
+  .ml-56 {
+    margin-left: 0 !important;
+  }
+}
+
+@layer utilities {
+  .print-only {
+    display: none;
+  }
+}

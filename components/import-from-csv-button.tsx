@@ -27,6 +27,7 @@ interface ProductInsert {
 export const DataImportButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const queryClient = useQueryClient();
 
   const { mutate: uploadProducts, isPending } = useMutation({
     // Explicitly type the input as Partial<Product>[]
@@ -39,7 +40,8 @@ export const DataImportButton = () => {
       return data;
     },
     onSuccess: () => {
-      // ... success logic
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      alert('Nhập dữ liệu thành công!');
     },
   });
 

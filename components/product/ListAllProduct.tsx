@@ -201,102 +201,112 @@ export const ProductListTable = ({ data }: { data: Product[] }) => {
   });
 
   return (
-    <div className='w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm'>
-      <div className='relative max-w-md p-3'>
-        <div className='absolute inset-y-0 left-1 pl-3 flex items-center pointer-events-none'>
-          <Search className='h-4 w-4 text-slate-400' />
-        </div>
-        <input
-          type='text'
-          value={globalFilter ?? ''}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder='Tìm tên hàng, mã vạch, nhóm hàng...'
-          className='block w-full pl-10 pr-10 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none shadow-sm'
-        />
-        {globalFilter && (
-          <button
-            onClick={() => setGlobalFilter('')}
-            className='absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600'
-          >
-            <X className='h-4 w-4' />
-          </button>
-        )}
-      </div>
-      <table className='w-full text-left border-collapse'>
-        <thead className='bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800'>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className='px-4 py-3 text-xs font-bold text-slate-600 dark:text-slate-400 uppercase'
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              className='hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors'
+    <div className='w-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm'>
+      {/* Search Bar Header */}
+      <div className='p-4 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50'>
+        <div className='relative max-w-md'>
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+            <Search className='h-4 w-4 text-slate-400' />
+          </div>
+          <input
+            type='text'
+            value={globalFilter ?? ''}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder='Tìm tên hàng, mã vạch, nhóm hàng...'
+            className='block w-full pl-10 pr-10 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none shadow-sm placeholder:text-slate-400'
+          />
+          {globalFilter && (
+            <button
+              onClick={() => setGlobalFilter('')}
+              className='absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors'
             >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className='px-4 py-2 align-middle'>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className='flex items-center justify-between px-4 py-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 rounded-b-xl'>
+              <X className='h-4 w-4' />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className='overflow-x-auto'>
+        <table className='w-full text-left border-collapse'>
+          <thead className='bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800'>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className='px-4 py-4 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider'
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className='hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group'
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className='px-4 py-3 align-middle'>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {/* Pagination Footer */}
+      <div className='flex items-center justify-between px-6 py-4 bg-slate-50/50 dark:bg-slate-800/30 border-t border-slate-200 dark:border-slate-800 rounded-b-2xl'>
         <div className='flex items-center gap-2'>
-          <span className='text-sm text-slate-600 dark:text-slate-400'>
-            Hiển thị {table.getRowModel().rows.length.toLocaleString()} trên{' '}
-            {table.getFilteredRowModel().rows.length.toLocaleString()} hàng
+          <span className='text-xs font-medium text-slate-500 dark:text-slate-400'>
+            Hiển thị <span className='text-slate-900 dark:text-slate-100 font-bold'>{table.getRowModel().rows.length}</span> trên{' '}
+            <span className='text-slate-900 dark:text-slate-100 font-bold'>{table.getFilteredRowModel().rows.length}</span> hàng
           </span>
         </div>
 
-        <div className='flex items-center gap-2'>
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className='p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors'
-          >
-            <ChevronLeft className='h-4 w-4 text-slate-600 dark:text-slate-400' />
-          </button>
+        <div className='flex items-center gap-4'>
+          <div className='flex items-center gap-1.5'>
+            <button
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className='p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-20 disabled:hover:bg-transparent transition-all shadow-sm'
+            >
+              <ChevronLeft className='h-4 w-4 text-slate-600 dark:text-slate-400' />
+            </button>
 
-          <div className='flex items-center gap-1'>
-            <span className='text-sm font-medium text-slate-700 dark:text-slate-300'>
-              Trang {table.getState().pagination.pageIndex + 1} /{' '}
-              {table.getPageCount()}
-            </span>
+            <div className='px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm'>
+              <span className='text-xs font-bold text-slate-700 dark:text-slate-200'>
+                {table.getState().pagination.pageIndex + 1} <span className='text-slate-400 font-medium mx-1'>/</span> {table.getPageCount()}
+              </span>
+            </div>
+
+            <button
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className='p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-20 disabled:hover:bg-transparent transition-all shadow-sm'
+            >
+              <ChevronRight className='h-4 w-4 text-slate-600 dark:text-slate-400' />
+            </button>
           </div>
 
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className='p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors'
-          >
-            <ChevronRight className='h-4 w-4 text-slate-600 dark:text-slate-400' />
-          </button>
+          <div className='h-4 w-[1px] bg-slate-200 dark:bg-slate-700 mx-1' />
 
           <select
             value={table.getState().pagination.pageSize}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
-            className='ml-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg p-1 outline-none focus:ring-2 focus:ring-emerald-500'
+            className='text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-lg py-1.5 pl-2 pr-1 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm'
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
-                Hiện {pageSize}
+                {pageSize} / trang
               </option>
             ))}
           </select>
