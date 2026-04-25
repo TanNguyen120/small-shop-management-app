@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import Providers from './provider';
 import './globals.css';
-import HeaderNav from '@/components/headerNav/HeaderNav';
 import { Sidebar } from '@/components/ui/sideBar';
 
 const defaultUrl = process.env.VERCEL_URL

@@ -5,9 +5,10 @@ import * as XLSX from 'xlsx'; // 👈 Added for Excel support
 import Papa from 'papaparse';
 import { Loader2, FileSpreadsheet } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase/supabase';
+import { supabase, Database } from '@/lib/supabase/supabase';
 import { processProductCsv, RawCsvRow } from '@/lib/helper/csvRelateHelpers';
-import { Product } from '@/type/product';
+
+type ProductInsert = Database['public']['Tables']['product']['Insert'];
 
 export const DataImportButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -15,10 +16,12 @@ export const DataImportButton = () => {
   const queryClient = useQueryClient();
 
   const { mutate: uploadProducts, isPending } = useMutation({
-    // Explicitly type the input as Partial<Product>[]
-    mutationFn: async (products: Partial<Product>[]) => {
-      // @ts-expect-error - upsert might need Row or Insert type, and Partial<Product> might not match exactly
-      const { data, error } = await supabase.from('product').upsert(
+    // Explicitly type the input as ProductInsert[]
+    mutationFn: async (products: ProductInsert[]) => {
+      // NOTE: Using 'as any' here because Supabase type inference is failing to recognize the 'product' table
+      // despite it being defined in the Database interface. This avoids the 'never' type build error.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase.from('product') as any).upsert(
         products,
         { onConflict: 'product_id' },
       );
@@ -53,7 +56,7 @@ export const DataImportButton = () => {
         const formatted = processProductCsv(jsonData);
         console.log('Formatted Product Data:', formatted); // Debug log to check the formatted data structure
 
-        uploadProducts(formatted);
+        uploadProducts(formatted as ProductInsert[]);
       } else if (fileName.endsWith('.csv')) {
         // --- 📄 CSV PROCESSING ---
         Papa.parse(file, {
@@ -61,7 +64,7 @@ export const DataImportButton = () => {
           skipEmptyLines: true,
           complete: (results) => {
             const formatted = processProductCsv(results.data as RawCsvRow[]);
-            uploadProducts(formatted);
+            uploadProducts(formatted as ProductInsert[]);
           },
         });
       } else {

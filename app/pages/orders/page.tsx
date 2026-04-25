@@ -3,19 +3,9 @@
 import { useOrders } from '@/hooks/useOrders';
 import { OrderListTable } from '@/components/order/OrderListTable';
 import { Loader2, AlertCircle, ShoppingBag } from 'lucide-react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function OrdersPage() {
   const { data: orders, isLoading, isError, error } = useOrders();
-
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        retry: 1,
-      },
-    },
-  });
 
   if (isLoading) {
     return (

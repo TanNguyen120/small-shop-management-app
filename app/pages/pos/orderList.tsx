@@ -2,7 +2,7 @@
 
 import { usePOSStore } from '@/store/use-pos-store';
 import { useEffect, useState, useTransition } from 'react';
-import { Trash2, Tag, Banknote, Loader2, Printer } from 'lucide-react';
+import { Trash2, Tag, Banknote, Loader2 } from 'lucide-react';
 import { saveOrderAction } from '@/app/actions/orders';
 import { PrintableReceipt } from '@/components/order/PrintableReceipt';
 import { OrderTransaction } from '@/type/order';

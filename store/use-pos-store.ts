@@ -32,6 +32,8 @@ export const usePOSStore = create<POSState>()(
       discount: 0,
 
       addItem: (product) => {
+        if (!product.id) return; // Cannot add item without ID
+
         const currentItems = get().items;
         const existingItem = currentItems.find(
           (item) => item.id === product.id,
@@ -45,7 +47,14 @@ export const usePOSStore = create<POSState>()(
             ),
           });
         } else {
-          set({ items: [...currentItems, { ...product, quantity: 1 }] });
+          const newItem: CartItem = {
+            id: product.id,
+            name: product.name,
+            barcode: product.barcode || '',
+            retail_price: product.retail_price,
+            quantity: 1,
+          };
+          set({ items: [...currentItems, newItem] });
         }
       },
 

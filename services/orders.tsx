@@ -26,7 +26,7 @@ export const fetchOrders = async (): Promise<OrderTransaction[]> => {
   const formattedData = (data as unknown as OrderWithItemsResponse[]).map(
     (order) => ({
       ...order,
-      order_items: order.order_items?.map((item) => ({
+      order_items: order.order_items?.map((item: OrderWithItemsResponse['order_items'][number]) => ({
         ...item,
         product_name: item.product?.name,
       })),

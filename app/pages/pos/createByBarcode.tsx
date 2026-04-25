@@ -37,7 +37,7 @@ export default function CreateByBarcode() {
       // 1. Search Supabase for the specific barcode
       const { data, error: sbError } = await supabase
         .from('product')
-        .select('id, name, retail_price, barcode, stock_quantity')
+        .select('*')
         .eq('barcode', barcode.trim())
         .single();
 

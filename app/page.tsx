@@ -1,6 +1,5 @@
 import { ThemeSwitcher } from '@/components/theme-switcher';
 
-import Link from 'next/link';
 import InventoryPage from './pages/product-list/page';
 
 export default function Home() {

@@ -33,7 +33,8 @@ export default function ProductForm() {
     },
     onSubmit: async ({ value }) => {
       if (value) {
-        const { error } = await supabase.from('product').insert(value);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error } = await (supabase.from('product') as any).insert(value);
         if (error) {
           alert(`Lỗi: ${error.message}`);
         } else {
