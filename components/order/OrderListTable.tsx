@@ -18,8 +18,6 @@ import {
   ChevronRight,
   Receipt,
   Calendar,
-  CreditCard,
-  User,
   ExternalLink,
   Printer,
 } from 'lucide-react';
@@ -126,7 +124,7 @@ export const OrderListTable = ({ data }: { data: OrderTransaction[] }) => {
 
       columnHelper.accessor('status', {
         header: 'Trạng thái',
-        cell: (info) => (
+        cell: () => (
           <span className='inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'>
             Hoàn tất
           </span>

@@ -10,7 +10,6 @@ import {
   Users,
   Settings,
   LogOut,
-  ChevronLeft,
   Receipt,
   PlusCircle,
 } from 'lucide-react';
