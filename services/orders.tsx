@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { OrderTransaction, OrderItem } from '@/type/order';
 
 type OrderWithItemsResponse = OrderTransaction & {
@@ -6,6 +6,7 @@ type OrderWithItemsResponse = OrderTransaction & {
 };
 
 export const fetchOrders = async (): Promise<OrderTransaction[]> => {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('order_transactions')
     .select(`

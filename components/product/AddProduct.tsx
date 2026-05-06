@@ -3,9 +3,10 @@
 import React from 'react';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
-import { productSchema } from '@/type/product';
-import { supabase } from '@/lib/supabase/supabase';
+import { ProductSchema, productSchema } from '@/type/product';
 import { Package, Barcode, DollarSign, Factory, Tag } from 'lucide-react';
+import { addProductAction } from '@/app/actions/products';
+import { toast } from 'sonner';
 
 // 1. Extract the exact type from the Schema to ensure 1:1 parity
 type ProductFormValues = z.input<typeof productSchema>;
@@ -20,27 +21,28 @@ export default function ProductForm() {
     stock_quantity: 0,
     is_active: true,
     category: '',
-    barcode: '', // Added to match schema
-    manufacturer: '', // Added to match schema
-    product_id: '', // Added to match schema
+    barcode: '',
+    manufacturer: '',
+    product_id: '',
+    user_id: '',
   };
 
   const form = useForm({
     defaultValues,
     validators: {
-      // 3. Cast to ZodType with the specific FormValues to fix the 'standardSpec' mismatch
       onChange: productSchema as z.ZodType<ProductFormValues>,
     },
     onSubmit: async ({ value }) => {
-      if (value) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (supabase.from('product') as any).insert(value);
-        if (error) {
-          alert(`Lỗi: ${error.message}`);
-        } else {
-          alert('Thêm sản phẩm thành công!');
-          form.reset();
-        }
+      const result = await addProductAction(value);
+      if (result.success) {
+        toast.success('Thêm sản phẩm thành công!');
+        form.reset();
+      } else {
+        // Handle both string errors and field-level error objects
+        const errorMsg = typeof result.error === 'string' 
+          ? result.error 
+          : 'Lỗi kiểm tra dữ liệu. Vui lòng kiểm tra lại các trường.';
+        toast.error(`Lỗi: ${errorMsg}`);
       }
     },
   });

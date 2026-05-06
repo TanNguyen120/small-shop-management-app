@@ -11,13 +11,13 @@ export const productSchema = z.object({
   product_id: z.string().optional(),
   created_at: z.string().datetime().optional(),
   updated_at: z.string().datetime().optional(),
+  user_id: z.string().uuid().optional(), // Added for multi-tenancy
 
   // Core Information
-  name: z.string().min(1, 'Product name is required'),
-  barcode: z.string().nullable().optional(),
+  name: z.string().min(1, 'Tên sản phẩm là bắt buộc'),
+  barcode: z.string().min(1, 'Mã vạch là bắt buộc').nullable().optional(),
 
   // 💰 FIX: Remove .default() and ensure they are just coerced numbers
-  // to match your defaultValues: { cost_price: 0 }
   cost_price: z.coerce.number().min(0).catch(0),
   wholesale_price: z.coerce.number().min(0).catch(0),
   retail_price: z.coerce.number().min(0).catch(0),
@@ -26,10 +26,15 @@ export const productSchema = z.object({
   stock_quantity: z.coerce.number().int().catch(0),
   is_active: z.boolean().default(true),
 
-  // Metadata - Keep these as they are if they can be null/undefined
+  // Metadata
   manufacturer: z.string().nullable().optional(),
   category: z.string().nullable().optional(),
 });
+
+/**
+ * Alias for user's preferred naming convention
+ */
+export const ProductSchema = productSchema;
 
 /**
  * TypeScript Type inferred from the Zod Schema

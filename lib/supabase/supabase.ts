@@ -7,6 +7,7 @@ export interface Database {
       product: {
         Row: {
           id: string;
+          user_id: string | null;
           product_id: string | null;
           name: string;
           barcode: string | null;
@@ -22,6 +23,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          user_id?: string | null;
           product_id?: string | null;
           name: string;
           barcode?: string | null;
@@ -37,6 +39,7 @@ export interface Database {
         };
         Update: {
           id?: string;
+          user_id?: string | null;
           product_id?: string | null;
           name?: string;
           barcode?: string | null;

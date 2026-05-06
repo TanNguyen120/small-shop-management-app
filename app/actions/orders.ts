@@ -16,32 +16,26 @@ export async function saveOrderAction(
   total: number,
   discount: number,
 ) {
-  // 1. Initialize the client
   const supabase = await createClient();
 
-  // 2. Check for the session/user (TEMPORARILY BYPASS FOR TESTING)
-  const { data } = await supabase.auth.getUser();
+  // 1. Authenticate user on server
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
   
-  // Use a dummy UUID if no user is found (Replace with a real ID from your auth.users table if needed)
-  const user = data?.user || { id: '8b3a0a4e-2a10-4566-9c86-a95117e198fc' };
-
-  /* 
-  if (authError || !data?.user) {
+  if (authError || !user) {
     return {
       success: false,
       error: 'Phiên làm việc hết hạn. Vui lòng đăng nhập lại.',
     };
   }
-  */
 
-  // 3. Prepare items for PostgreSQL JSONB
+  // 2. Prepare items
   const formattedItems = items.map((item) => ({
     product_id: item.id,
     quantity: item.quantity,
     unit_price_paid: item.retail_price,
   }));
 
-  // 4. Call the RPC
+  // 3. Call RPC with the authenticated user.id
   const { data: orderId, error: rpcError } = await supabase.rpc(
     'create_order_transaction',
     {
